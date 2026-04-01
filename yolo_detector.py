@@ -3,7 +3,7 @@ from ultralytics.utils.plotting import Annotator, colors
 import cv2
 
 # Load YOLO model
-model = YOLO("yolov8a.pt")
+model = YOLO("yolov8n.pt")
 
 
 def draw_boxes(frame, boxes):
@@ -29,26 +29,26 @@ def detect_object(frame):
     """Detect object from image frame"""
 
     # Detect object from image frame
-    results = model.prediction(frame)
+    results = model.predict(frame)
 
     for result in results:
-    frame = draw_boxes(frame, result.boxes)
+        frame = draw_boxes(frame, result.boxes)
 
     return frame
 
 
 if __name__ == "__main__":
     video_path = "CatZoomies.mp4"
-    cap = cv.VideoCapture(video_path)
+    cap = cv2.VideoCapture(video_path)
 
     # Define the codec and create VideoWriter object
-    video_writer = cv.VideoWriter(
-        video_path + "_demo.avi", cv.VideoWriter_fourcc(*"MJPG"), 30, (1280, 720)
+    video_writer = cv2.VideoWriter(
+        video_path + "_demo.avi", cv2.VideoWriter_fourcc(*"MJPG"), 30, (1280, 720)
     )
 
     while cap.isOpened():
         # Read image frame
-        ret, frame = cap.read_frame()
+        ret, frame = cap.read()
 
         if ret:
             # Detect motorcycle from image frame
@@ -58,9 +58,9 @@ if __name__ == "__main__":
             video_writer.write(frame_result)
 
             # Show result
-            cv.namedWindow("Video", cv.WINDOW_NORMAL)
-            cv.imshow("Video", frame_result)
-            cv.waitKey(30)
+            cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
+            cv2.imshow("Video", frame_result)
+            cv2.waitKey(30)
 
         else:
             break
