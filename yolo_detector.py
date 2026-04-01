@@ -2,6 +2,9 @@ from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
 import cv2
 
+#
+text = "Phanlop-Clicknext-Internship-2024"
+
 # Load YOLO model
 model = YOLO("yolov8n.pt")
 
@@ -57,6 +60,16 @@ if __name__ == "__main__":
 
             # Write result to video
             video_writer.write(frame_result)
+
+            # Writ text to video
+            
+            cv2.putText(frame, 
+                        text,
+                        (600, 40),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1,
+                        (0, 255, 255),
+                        2,
+                        cv2.LINE_4)
 
             # Show result
             cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
