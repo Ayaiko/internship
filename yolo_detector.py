@@ -72,9 +72,10 @@ if __name__ == "__main__":
                         cv2.LINE_4)
 
             # Show result
-            cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
+            cv2.namedWindow("Video", cv2.WND_PROP_FULLSCREEN)
             cv2.imshow("Video", frame_result)
-            cv2.waitKey(30)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
 
         else:
             break
