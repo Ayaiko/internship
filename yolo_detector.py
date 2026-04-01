@@ -29,9 +29,11 @@ def detect_object(frame):
 
     # Detect object from image frame
     results = model.predict(frame)
-    
+
     for result in results:
-        frame = draw_boxes(frame, result[0].boxes)
+        #print("result[1]: ", result[1])
+        if result: 
+            frame = draw_boxes(frame, result.boxes)
 
     return frame
 
