@@ -21,7 +21,7 @@ def draw_boxes(frame, boxes):
 
     # Draw bounding box
     annotator.box_label(
-        box=coordinator, label=class_name, color=colors(class_id, True)
+        box=coordinator, label=class_name, color=colors(4, True)
     )
 
     return annotator.result()
@@ -46,9 +46,9 @@ if __name__ == "__main__":
     cap = cv2.VideoCapture(video_path)
 
     # Define the codec and create VideoWriter object
-    video_writer = cv2.VideoWriter(
-        video_path + "_demo.avi", cv2.VideoWriter_fourcc(*"MJPG"), 30, (1280, 720)
-    )
+    # video_writer = cv2.VideoWriter(
+    #     video_path + "_demo.avi", cv2.VideoWriter_fourcc(*"MJPG"), 60, (1280, 720)
+    # )
 
     while cap.isOpened():
         # Read image frame
@@ -59,7 +59,7 @@ if __name__ == "__main__":
             frame_result = detect_object(frame)
 
             # Write result to video
-            video_writer.write(frame_result)
+            #video_writer.write(frame_result)
 
             # Writ text to video
             
