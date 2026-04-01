@@ -5,7 +5,6 @@ import cv2
 # Load YOLO model
 model = YOLO("yolov8n.pt")
 
-
 def draw_boxes(frame, boxes):
     """Draw detected bounding boxes on image frame"""
 
@@ -30,9 +29,9 @@ def detect_object(frame):
 
     # Detect object from image frame
     results = model.predict(frame)
-
+    
     for result in results:
-        frame = draw_boxes(frame, result.boxes)
+        frame = draw_boxes(frame, result[0].boxes)
 
     return frame
 
