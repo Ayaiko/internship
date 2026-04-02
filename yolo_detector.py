@@ -8,7 +8,20 @@ text = "Phanlop-Clicknext-Internship-2024"
 # Load YOLO model
 model = YOLO("yolov8n.pt")
 
-def draw_boxes(frame, boxes):
+def draw_track_line(frame, boxes, track_line_vec):
+    """"Draw track line on each from track_line_vec"""
+    
+
+def bounding_boxes_center(coordinator, track_line_vec):
+    """Calculate bounding box center"""
+    x_center = coordinator[0] + (coordinator[2]/2)
+    y_center = coordinator[1] + (coordinator[3]/2)
+
+    xy_center = [x_center, y_center]
+    track_line_vec.append(xy_center)
+    return None
+
+def draw_boxes(frame, boxes, track_line_vec):
     """Draw detected bounding boxes on image frame"""
 
     # Create annotator object
@@ -17,6 +30,7 @@ def draw_boxes(frame, boxes):
         class_id = box.cls
         class_name = model.names[int(class_id)]
         coordinator = box.xyxy[0]
+        track_line_vec.append()
         confidence = box.conf
 
     # Draw bounding box
@@ -47,25 +61,31 @@ if __name__ == "__main__":
 
     # Define the codec and create VideoWriter object
     video_writer = cv2.VideoWriter(
-        video_path + "_demo.avi", cv2.VideoWriter_fourcc(*"MJPG"), 30, (1280, 720)
+        video_path + "_demo.avi", cv2.VideoWriter_fourcc(*"MJPG"), 60, (1280, 720)
     )
 
     while cap.isOpened():
         # Read image frame
         ret, frame = cap.read()
+        track_line_vec = []
 
         if ret:
             # Detect motorcycle from image frame
-            frame_result = detect_object(frame)
+            frame_result = detect_object(frame, track_line_vec)
+
+
 
             # Write result to video
             video_writer.write(frame_result)
 
             # Writ text to video
+            # fps = cap.get(cv2.CAP_PROP_FPS)
+
+            cv2.line()
             
             cv2.putText(frame, 
-                        text,
-                        (600, 40),
+                        "fps: " + str(fps) + text,
+                        (550, 40),
                         cv2.FONT_HERSHEY_SIMPLEX, 1,
                         (0, 255, 255),
                         2,
