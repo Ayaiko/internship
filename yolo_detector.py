@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
+import numpy as np
 import cv2
 
 #
@@ -7,6 +8,19 @@ text = "Phanlop-Clicknext-Internship-2024"
 
 # Load YOLO model
 model = YOLO("yolov8n.pt")
+
+# Initialize track history
+track_history = []
+
+def draw_track_line(frame, boxes, track_history) -> None:
+    for box in boxes.xywh.cpu():
+        x, y, w, h = box
+        track_history.append((float(x), float(y)))
+        if len(track_history) > 30:
+            track_history.pop(0)
+        
+        points = np.hstack(track_history).astype(np.int32).reshape((-1, 1, 2))
+        cv2.polylines(frame, [points], isClosed=False, color=(230, 230, 230), thickness=5)
 
 def draw_boxes(frame, boxes):
     """Draw detected bounding boxes on image frame"""
@@ -27,16 +41,17 @@ def draw_boxes(frame, boxes):
     return annotator.result()
 
 
-def detect_object(frame):
+def detect_object(frame, track_history):
     """Detect object from image frame"""
 
     # Detect object from image frame
-    results = model.predict(frame, classes=[15])
+    results = model.track(frame, persist=True, classes=[15], )
 
     for result in results:
         #print("result[1]: ", result[1])
         if result: 
             frame = draw_boxes(frame, result.boxes)
+            draw_track_line(frame, result.boxes, track_history)
 
     return frame
 
@@ -56,7 +71,7 @@ if __name__ == "__main__":
 
         if ret:
             # Detect motorcycle from image frame
-            frame_result = detect_object(frame)
+            frame_result = detect_object(frame, track_history)
 
             # Write result to video
             #video_writer.write(frame_result)
@@ -72,9 +87,10 @@ if __name__ == "__main__":
                         cv2.LINE_4)
 
             # Show result
-            cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
+            cv2.namedWindow("Video", cv2.WND_PROP_FULLSCREEN)
             cv2.imshow("Video", frame_result)
-            cv2.waitKey(30)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
 
         else:
             break
